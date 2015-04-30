@@ -59,17 +59,17 @@ def costsManage(units_to_buy, unit_num, unit):
 		return price
 
 #Define all type of units
-cursor = unit (15, cursor_num, 0.1)
-grandma = unit (100, grandma_num, 0.5)
-farm = unit (100, grandma_num, 0.5)
-factory = unit (100, grandma_num, 0.5)
-mine = unit (100, grandma_num, 0.5)
-shipment = unit (100, grandma_num, 0.5)
-alchemy_lab = unit (100, grandma_num, 0.5)
-portal = unit (100, grandma_num, 0.5)
-time_machine = unit (100, grandma_num, 0.5)
-antimatter_condenser = unit (100, grandma_num, 0.5)
-prism = unit (100, grandma_num, 0.5)
+cursor = unit (15*U, cursor_num, 0.1*U)
+grandma = unit (100*U, grandma_num, 0.5*U)
+farm = unit (500*U, grandma_num, 4*U)
+factory = unit (3*K, grandma_num, 10*U)
+mine = unit (10*K, grandma_num, 40*U)
+shipment = unit (40*K, grandma_num, 100*U)
+alchemy_lab = unit (200 * K, grandma_num, 400*U)
+portal = unit (1*M + 666*K + 666*U, grandma_num, 6*K + 666*U)
+time_machine = unit (123*M + 456*K + 789*U, grandma_num, 98*K + 765*U)
+antimatter_condenser = unit (3*B + 999*M + 999*K + 999*U, grandma_num, 999*K + 999*U)
+prism = unit (75*B, grandma_num, 10*M)
 
 #Calculates cps produced by all your units
 def absoluteCps():
@@ -85,12 +85,14 @@ def timeManage(unit, units_to_buy):
 			time = 0
 			time += costsManage((unit_num - cursor.num), unit_num, unit) / absoluteCps()
 			cursor.buy(unit_num - cursor.num)
+			return time
 			#print (unit_num, absoluteCps(), time/60)
 	elif (unit == "grandma"):
 		for unit_num in range(grandma.num, units_to_buy + 1):
 			time = 0
 			time += costsManage((unit_num - grandma.num), unit_num, unit) / absoluteCps()
 			grandma.buy(unit_num - grandma.num)
+			return time
 			#print (unit_num, absoluteCps(), time/60)
 
 #################################################################

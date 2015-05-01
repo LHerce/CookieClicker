@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 #Define High Number multipliers
-k=10**3 #kilo
+K=10**3 #kilo
 M=10**6 #million
 B=10**9 #billion
 T=10**12 #trillion
@@ -59,7 +59,7 @@ def costsManage(num_units_buy, unit_num):
 
 
 
-for unit_num in range(initial_num, 70):#final_num + 1):
+for unit_num in range(initial_num, 75):#final_num + 1):
 	time = 0
 	cps = initial_cps
 	#time to buy n units

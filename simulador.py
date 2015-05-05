@@ -7,8 +7,8 @@ T = 10 ** 12 #trillion
 Q = 10 ** 15 #quadrillion
 
 #Initial Number of Buildings
-cursor_num = 0
-grandma_num = 1
+cursor_num = 1
+grandma_num = 0
 farm_num = 0
 factory_num = 0
 mine_num = 0
@@ -22,6 +22,7 @@ prism_num = 0
 #Parameters
 upgrade_multiplier = 2
 r = 1.15 #Price multiplier
+time = 0
 
 #################################################################
 ### First it has the initial parameters, the upgrade method ##### 
@@ -81,33 +82,36 @@ def absoluteCps():
 #################################################################
 def timeManage(unit, units_to_buy):
 	if (unit == "cursor"):
+		time = 0
 		for unit_num in range(cursor.num, units_to_buy + 1):
-			time = 0
 			time += costsManage((unit_num - cursor.num), unit_num, unit) / absoluteCps()
 			cursor.buy(unit_num - cursor.num)
-			return time
 			#print (unit_num, absoluteCps(), time/60)
+		return time			
 	elif (unit == "grandma"):
+		time = 0
 		for unit_num in range(grandma.num, units_to_buy + 1):
-			time = 0
 			time += costsManage((unit_num - grandma.num), unit_num, unit) / absoluteCps()
 			grandma.buy(unit_num - grandma.num)
-			return time
 			#print (unit_num, absoluteCps(), time/60)
+		return time
+
+#################################################################		
+### This function crecieves a matrix with the type of unit and ## 
+### the number you want to buy and calculates the time it takes #
+#################################################################
+
+def genTime(comands, time):
+	for i in range(len(comands)):
+		time += timeManage (comands[i][0], comands[i][1])
+	return time
 
 #################################################################
-### Faltaria interpretar el gen, convertirlo en una matriz de ### 
-### comandos con el tipo de unidad y la cantidad cada vez y #####
-### hacer un bucle que pase cada comando por la funcion que #####
-### calcula el tiempo que tarda y los sume ######################
+### Faltaria interpretar el gen y convertirlo ###################
+### en la matriz de comandos ####################################
 #################################################################
 
 #Test
-timeManage("grandma", 30)
+comands = [["cursor",7],["grandma",10],["cursor",15],["grandma",90]]
+print(genTime(comands, time))
 
-#################################################################
-######################## --MEJORAS-- ############################
-### Comprobar si existe switch case en python y como se escribe #
-### para cuando tengamos que hacer todos los tipos de unidades, #
-### no solo abuelas y cursores ##################################
-#################################################################

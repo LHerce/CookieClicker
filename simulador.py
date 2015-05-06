@@ -53,10 +53,7 @@ def costsManage(units_to_buy, unit_num, unit):
 	if units_to_buy == 0:
 		return 0
 	elif (unit == "cursor"):
-		price = cursor.price * (((r ** (unit_num + units_to_buy + 1)) - (r ** (unit_num))) / (r - 1))
-		return price
-	elif (unit == "grandma"):
-		price = grandma.price * (((r ** (unit_num + units_to_buy + 1)) - (r ** (unit_num))) / (r - 1))
+		price = cursor.price * ((r ** (unit_num + units_to_buy)) - (r ** (unit_num))) / (r - 1)
 		return price
 
 #Define all type of units
@@ -80,20 +77,17 @@ def absoluteCps():
 ### This function calculates the time spended to buy certain #### 
 ### number of times the specified unit ##########################
 #################################################################
+
 def timeManage(unit, units_to_buy):
 	if (unit == "cursor"):
+		price = costsManage(1, cursor_num - 1, "cursor")
 		time = 0
-		for unit_num in range(cursor.num, units_to_buy + 1):
-			time += costsManage((unit_num - cursor.num), unit_num, unit) / absoluteCps()
+		for unit_num in range(cursor.num, units_to_buy + cursor.num):
+			unit_num += 1
+			price *= 1.15
+			time += price / absoluteCps()
+			print (price, unit_num, absoluteCps(), time)
 			cursor.buy(unit_num - cursor.num)
-			#print (unit_num, absoluteCps(), time/60)
-		return time			
-	elif (unit == "grandma"):
-		time = 0
-		for unit_num in range(grandma.num, units_to_buy + 1):
-			time += costsManage((unit_num - grandma.num), unit_num, unit) / absoluteCps()
-			grandma.buy(unit_num - grandma.num)
-			#print (unit_num, absoluteCps(), time/60)
 		return time
 
 #################################################################		
@@ -104,6 +98,7 @@ def timeManage(unit, units_to_buy):
 def genTime(comands, time):
 	for i in range(len(comands)):
 		time += timeManage (comands[i][0], comands[i][1])
+		#print(time)
 	return time
 
 #################################################################
@@ -112,6 +107,5 @@ def genTime(comands, time):
 #################################################################
 
 #Test
-comands = [["cursor",7],["grandma",10],["cursor",15],["grandma",90]]
+comands = [["cursor", 2],["cursor", 2]]
 print(genTime(comands, time))
-

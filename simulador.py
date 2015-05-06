@@ -7,7 +7,7 @@ T = 10 ** 12 #trillion
 Q = 10 ** 15 #quadrillion
 
 #Initial Number of Buildings
-cursor_num = 1
+cursor_num = 2
 grandma_num = 0
 farm_num = 0
 factory_num = 0
@@ -17,12 +17,14 @@ alchemy_lab_num = 0
 portal_num = 0
 time_machine_num = 0
 antimatter_condenser_num = 0
-prism_num = 0
+prism_num =0
 
 #Parameters
 upgrade_multiplier = 2
 r = 1.15 #Price multiplier
 time = 0
+type_num = 10 #Number of types of units (there is no prisms yet)
+abs_cps = 0
 
 #################################################################
 ### First it has the initial parameters, the upgrade method ##### 
@@ -35,6 +37,7 @@ class unit:
 		self.price = initial_price
 		self.num = initial_num
 		self.unit_cps = unit_cps
+		self.initial_num = initial_num
 	def upgrade(self, upgrade_multiplier):
 		self.unit_cps *= upgrade_multiplier
 	def buy(self, unit_num):
@@ -49,46 +52,48 @@ class unit:
 ###  since the price follows a grometic progression #############
 ### the formula of the sum of n terms is used here ##############
 #################################################################
-def costsManage(units_to_buy, unit_num, unit):
+def costsManage(units_to_buy, unit_num, unit_type):
 	if units_to_buy == 0:
 		return 0
-	elif (unit == "cursor"):
-		price = cursor.price * ((r ** (unit_num + units_to_buy)) - (r ** (unit_num))) / (r - 1)
+	else:
+		price = Units[unit_type].price * ((r ** (unit_num + units_to_buy)) - (r ** (unit_num))) / (r - 1)
 		return price
 
 #Define all type of units
-cursor = unit (15*U, cursor_num, 0.1*U)
-grandma = unit (100*U, grandma_num, 0.5*U)
-farm = unit (500*U, grandma_num, 4*U)
-factory = unit (3*K, grandma_num, 10*U)
-mine = unit (10*K, grandma_num, 40*U)
-shipment = unit (40*K, grandma_num, 100*U)
-alchemy_lab = unit (200 * K, grandma_num, 400*U)
-portal = unit (1*M + 666*K + 666*U, grandma_num, 6*K + 666*U)
-time_machine = unit (123*M + 456*K + 789*U, grandma_num, 98*K + 765*U)
-antimatter_condenser = unit (3*B + 999*M + 999*K + 999*U, grandma_num, 999*K + 999*U)
-prism = unit (75*B, grandma_num, 10*M)
+
+Units = (unit (15*U, cursor_num, 0.1*U), #Cursor
+	unit (100*U, grandma_num, 0.5*U), #Grandma
+	unit (500*U, farm_num, 4*U), #Farm
+	unit (3*K, factory_num, 10*U), #Factory
+	unit (10*K, mine_num, 40*U), #Mine
+	unit (40*K, shipment_num, 100*U), #Shipment
+	unit (200 * K, alchemy_lab_num, 400*U), #Alchemy Lab
+	unit (1*M + 666*K + 666*U, portal_num, 6*K + 666*U), #Portal
+	unit (123*M + 456*K + 789*U, time_machine_num, 98*K + 765*U), #Time Machine
+	unit (3*B + 999*M + 999*K + 999*U, antimatter_condenser_num, 999*K + 999*U), #Antimatter Condenser
+	unit (75*B, grandma_num, 10*M)) #Prism  Hay 11 unidades
 
 #Calculates cps produced by all your units
 def absoluteCps():
-	return cursor.total_unit_cps() + grandma.total_unit_cps()	
+	cps = 0
+	for i in range(type_num):
+		cps += Units[i].total_unit_cps()
+	return cps
 
 #################################################################
 ### This function calculates the time spended to buy certain #### 
 ### number of times the specified unit ##########################
 #################################################################
 
-def timeManage(unit, units_to_buy):
-	if (unit == "cursor"):
-		price = costsManage(1, cursor_num - 1, "cursor")
-		time = 0
-		for unit_num in range(cursor.num, units_to_buy + cursor.num):
-			unit_num += 1
-			price *= 1.15
-			time += price / absoluteCps()
-			print (price, unit_num, absoluteCps(), time)
-			cursor.buy(unit_num - cursor.num)
-		return time
+def timeManage(unit_type, units_to_buy):
+	price = costsManage(1, Units[unit_type].initial_num - 1, unit_type)
+	time = 0
+	for unit_num in range(Units[unit_type].num, units_to_buy + Units[unit_type].num):
+		unit_num += 1
+		price *= 1.15
+		time += price / absoluteCps()
+		Units[unit_type].buy(unit_num - Units[unit_type].num)
+	return time
 
 #################################################################		
 ### This function crecieves a matrix with the type of unit and ## 
@@ -98,7 +103,6 @@ def timeManage(unit, units_to_buy):
 def genTime(comands, time):
 	for i in range(len(comands)):
 		time += timeManage (comands[i][0], comands[i][1])
-		#print(time)
 	return time
 
 #################################################################
@@ -107,5 +111,5 @@ def genTime(comands, time):
 #################################################################
 
 #Test
-comands = [["cursor", 2],["cursor", 2]]
+comands = [[0, 2],[1, 2],[2,5],[5,1]]
 print(genTime(comands, time))
